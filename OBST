@@ -1,0 +1,157 @@
+package UIT833;
+
+import java.util.Scanner;
+
+
+
+public class OptimalBST {
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+
+
+
+        System.out.print("Enter the number of keys: ");
+
+        int n = scanner.nextInt();
+
+
+
+        int[] keys = new int[n];
+
+        double[] probabilities = new double[n];
+
+        double[] dummyProbabilities = new double[n + 1];
+
+
+
+        System.out.println("Enter the keys in sorted order:");
+
+        for (int i = 0; i < n; i++) {
+
+            keys[i] = scanner.nextInt();
+
+        }
+
+
+
+        System.out.println("Enter the probabilities for each key:");
+
+        for (int i = 0; i < n; i++) {
+
+            probabilities[i] = scanner.nextDouble();
+
+        }
+
+
+
+        System.out.println("Enter the probabilities for dummy keys:");
+
+        for (int i = 0; i <= n; i++) {
+
+            dummyProbabilities[i] = scanner.nextDouble();
+
+        }
+
+
+
+        optimalBST(keys, probabilities, dummyProbabilities, n);
+
+    }
+
+
+
+    public static void optimalBST(int[] keys, double[] p, double[] q, int n) {
+
+        double[][] cost = new double[n + 1][n + 1];
+
+        double[][] weight = new double[n + 1][n + 1];
+
+        int[][] root = new int[n + 1][n + 1];
+
+
+
+        // Initialize weight and cost matrices
+
+        for (int i = 0; i <= n; i++) {
+
+            cost[i][i] = q[i];
+
+            weight[i][i] = q[i];
+
+        }
+
+
+
+        // Build the tables for weight, cost, and root
+
+        for (int l = 1; l <= n; l++) { // Length of subtrees
+
+            for (int i = 0; i <= n - l; i++) {
+
+                int j = i + l;
+
+                weight[i][j] = weight[i][j - 1] + p[j - 1] + q[j];
+
+                cost[i][j] = Double.MAX_VALUE;
+
+
+
+                for (int r = i + 1; r <= j; r++) { // r is the root
+
+                    double tempCost = cost[i][r - 1] + cost[r][j] + weight[i][j];
+
+                    if (tempCost < cost[i][j]) {
+
+                        cost[i][j] = tempCost;
+
+                        root[i][j] = r;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+
+
+        System.out.println("Minimum cost of the Optimal BST: " + cost[0][n]);
+
+        System.out.println("Root of the Optimal BST: " + keys[root[0][n] - 1]);
+
+        System.out.println("Structure of the Optimal BST:");
+
+        printOptimalBSTStructure(root, keys, 0, n, 0);
+
+    }
+
+
+
+    // Helper function to print the structure of the Optimal BST
+
+    public static void printOptimalBSTStructure(int[][] root, int[] keys, int i, int j, int level) {
+
+        if (i >= j) {
+
+            System.out.println(" ".repeat(level * 4) + "Dummy");
+
+            return;
+
+        }
+
+
+
+        int r = root[i][j];
+
+        System.out.println(" ".repeat(level * 4) + keys[r - 1]);
+
+        printOptimalBSTStructure(root, keys, i, r - 1, level + 1);
+
+        printOptimalBSTStructure(root, keys, r, j, level + 1);
+
+    }
+
+}
