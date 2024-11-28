@@ -1,0 +1,72 @@
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class SumOfSubsets {
+    static int W; // Target sum
+    static int[] w; // Weights array
+    static int[] include; // Array to track included elements
+    static boolean foundSolution = false; // Flag to track if any solution was found
+
+    public static boolean promising(int i, int sumSoFar, int sumRemain) {
+        return (sumSoFar + sumRemain >= W) && (sumSoFar <= W);
+    }
+
+    public static void sumOfSubsets(int i, int sumSoFar, int sumRemain) {
+        if (promising(i, sumSoFar, sumRemain)) {
+            if (sumSoFar == W) {
+                printSolution();
+                foundSolution = true;
+            } else if (i + 1 < w.length) {
+                include[i + 1] = 1;
+                sumOfSubsets(i + 1, sumSoFar + w[i + 1], sumRemain - w[i + 1]);
+                include[i + 1] = 0;
+                sumOfSubsets(i + 1, sumSoFar, sumRemain - w[i + 1]);
+            }
+        }
+    }
+
+    public static void printSolution() {
+        System.out.print("Subset: { ");
+        for (int i = 0; i < include.length; i++) {
+            if (include[i] == 1) {
+                System.out.print(w[i] + " ");
+            }
+        }
+        System.out.println("}");
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the number of elements: ");
+        int n = sc.nextInt();
+        if (n <= 0) {
+            System.out.println("No elements provided.");
+            return;
+        }
+        w = new int[n];
+        System.out.println("Enter the elements:");
+        for (int i = 0; i < n; i++) {
+            w[i] = sc.nextInt();
+        }
+        System.out.print("Enter the target sum (W): ");
+        W = sc.nextInt();
+        include = new int[n];
+       
+        // Sort the array for efficiency
+        Arrays.sort(w);
+
+        int totalSum = 0;
+        for (int weight : w) {
+            totalSum += weight;
+        }
+
+        System.out.println("Subsets with the sum " + W + ":");
+        sumOfSubsets(-1, 0, totalSum);
+
+        if (!foundSolution) {
+            System.out.println("No subset with the target sum found.");
+        }
+
+        sc.close();
+    }
+}
