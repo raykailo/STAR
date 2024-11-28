@@ -1,0 +1,185 @@
+package Daa;
+
+import java.util.Scanner;
+
+public class fknap 
+
+ {
+
+
+
+	    static class Item 
+
+	    {
+
+	        int profit, weight;
+
+	        public Item(int profit, int weight) 
+
+	        {
+
+	            this.profit = profit;
+
+	            this.weight = weight;
+
+	        }
+
+	    }
+
+
+
+	    // Function to sort items by profit-to-weight ratio in descending order
+
+	    private static void sortItemsByRatio(Item[] items) 
+
+	    {
+
+	        for (int i = 0; i < items.length - 1; i++) 
+
+	        {
+
+	            for (int j = 0; j < items.length - i - 1; j++) 
+
+	            {
+
+	                double ratio1 = (double) items[j].profit / items[j].weight;
+
+	                double ratio2 = (double) items[j + 1].profit / items[j + 1].weight;
+
+	                if (ratio1 < ratio2) 
+
+	                {
+
+	                    // Swap items[j] and items[j + 1]
+
+	                    Item temp = items[j];
+
+	                    items[j] = items[j + 1];
+
+	                    items[j + 1] = temp;
+
+	                }
+
+	            }
+
+	        }
+
+	    }
+
+
+
+	    private static double getMaxValue(Item[] items, int capacity) 
+
+	    {
+
+	        sortItemsByRatio(items);
+
+	        double totalValue = 0.0;
+
+	        
+
+	        // Loop with explicit index control
+
+	        for (int i = 0; i < items.length; i++) 
+
+	        {
+
+	            if (capacity >= items[i].weight) 
+
+	            {
+
+	                // If the item can be taken fully
+
+	                capacity -= items[i].weight;
+
+	                totalValue += items[i].profit;
+
+	            } 
+
+	            else 
+
+	            {
+
+	                // If the item can only be taken partially
+
+	                totalValue += items[i].profit * ((double) capacity / items[i].weight);
+
+	                // End the loop by setting i to items.length
+
+	                i = items.length;
+
+	            }
+
+	        }
+
+
+
+	        return totalValue;
+
+	    }
+
+
+
+
+
+	    public static void main(String[] args) 
+
+	    {
+
+	        Scanner scanner = new Scanner(System.in);
+
+
+
+	        // Take user input for number of items
+
+	        System.out.print("Enter the number of items: ");
+
+	        int n = scanner.nextInt();
+
+
+
+	        // Create an array to hold items
+
+	        Item[] items = new Item[n];
+
+
+
+	        // Take user input for each item's profit and weight
+
+	        for (int i = 0; i < n; i++) 
+
+	        {
+
+	            System.out.printf("Enter profit and weight for item %d: ", i + 1);
+
+	            int profit = scanner.nextInt();
+
+	            int weight = scanner.nextInt();
+
+	            items[i] = new Item(profit, weight);
+
+	        }
+
+
+
+	        // Take user input for knapsack capacity
+
+	        System.out.print("Enter the capacity of the knapsack: ");
+
+	        int capacity = scanner.nextInt();
+
+
+
+	        // Compute and display the maximum value
+
+	        double maxValue = getMaxValue(items, capacity);
+
+	        System.out.printf("Maximum value in knapsack: %.2f\n", maxValue);
+
+
+
+	        scanner.close();
+
+	    }
+
+	}
