@@ -1,4 +1,4 @@
-Package UIT833;
+package UIT833;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -82,3 +82,197 @@ public class SumOfSubsetsBranchBound {
         scanner.close();
     }
 }
+
+
+
+
+
+
+package UIT833;
+
+import java.util.*;
+
+public class TSPBranchAndBound {
+
+    static final int INF = Integer.MAX_VALUE;
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the number of cities: ");
+
+        int n = scanner.nextInt();
+
+        int[][] costMatrix = new int[n][n];
+
+        System.out.println("Enter the cost matrix (use " + INF + " for no direct path):");
+
+        for (int i = 0; i < n; i++) {
+
+            for (int j = 0; j < n; j++) {
+
+                costMatrix[i][j] = scanner.nextInt();
+
+            }
+
+        }
+
+        System.out.println("Minimum cost of the tour: " + tsp(costMatrix, n));
+
+    }
+
+    static class Node implements Comparable<Node> {
+
+        int level;
+
+        int currentCity;
+
+        int cost;
+
+        int bound;
+
+        List<Integer> path;
+
+        public Node(int level, int currentCity, int cost, int bound, List<Integer> path) {
+
+            this.level = level;
+
+            this.currentCity = currentCity;
+
+            this.cost = cost;
+
+            this.bound = bound;
+
+            this.path = new ArrayList<>(path);
+
+        }
+
+        @Override
+
+        public int compareTo(Node o) {
+
+            return Integer.compare(this.bound, o.bound);
+
+        }
+
+    }
+
+    private static int tsp(int[][] costMatrix, int n) {
+
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+
+        List<Integer> initialPath = new ArrayList<>();
+
+        initialPath.add(0);
+
+        int initialBound = calculateBound(costMatrix, n, initialPath);
+
+        pq.add(new Node(0, 0, 0, initialBound, initialPath));
+
+int minCost = INF;
+
+        while (!pq.isEmpty()) {
+
+            Node currentNode = pq.poll();
+
+            if (currentNode.bound < minCost) {
+
+                if (currentNode.level == n - 1) {
+
+                    // All cities are visited, close the tour
+
+                    int finalCost = currentNode.cost + costMatrix[currentNode.currentCity][0];
+
+                    if (finalCost < minCost) {
+
+                        minCost = finalCost;
+
+                    }
+
+                } else {
+
+                    for (int i = 0; i < n; i++) {
+
+                        if (!currentNode.path.contains(i) && costMatrix[currentNode.currentCity][i] != INF) {
+
+                            List<Integer> newPath = new ArrayList<>(currentNode.path);
+
+                            newPath.add(i);
+
+
+
+                            int newCost = currentNode.cost + costMatrix[currentNode.currentCity][i];
+
+                            int newBound = calculateBound(costMatrix, n, newPath);
+
+                            if (newBound < minCost) {
+
+                                pq.add(new Node(currentNode.level + 1, i, newCost, newBound, newPath));
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        return minCost;
+
+    }
+private static int calculateBound(int[][] costMatrix, int n, List<Integer> path) {
+
+        int bound = 0;
+
+        boolean[] visited = new boolean[n];
+
+        for (int city : path) {
+
+            visited[city] = true;
+
+        }
+ // Add the outgoing edges for visited cities
+
+        for (int i = 0; i < path.size() - 1; i++) {
+
+            int from = path.get(i);
+
+            int to = path.get(i + 1);
+
+            bound += costMatrix[from][to];
+
+        }
+  // Add the minimum edge for unvisited cities
+
+        for (int i = 0; i < n; i++) {
+
+            if (!visited[i]) {
+
+                int minEdge = INF;
+
+                for (int j = 0; j < n; j++) {
+
+                    if (i != j && costMatrix[i][j] < minEdge) {
+
+                        minEdge = costMatrix[i][j];
+
+                    }
+
+                }
+
+                bound += minEdge;
+
+            }
+
+        }
+  return bound;
+
+    }
+
+}
+
