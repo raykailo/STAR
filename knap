@@ -4,34 +4,18 @@ import java.util.Scanner;
 
 public class fknap 
 
- {
+ {static class Item 
 
+ {  int profit, weight;
 
+ public Item(int profit, int weight) 
 
-	    static class Item 
-
-	    {
-
-	        int profit, weight;
-
-	        public Item(int profit, int weight) 
-
-	        {
-
-	            this.profit = profit;
-
-	            this.weight = weight;
-
-	        }
-
-	    }
-
-
-
-	    // Function to sort items by profit-to-weight ratio in descending order
-
-	    private static void sortItemsByRatio(Item[] items) 
-
+ { this.profit = profit;
+ this.weight = weight;
+ }
+ }
+  // Function to sort items by profit-to-weight ratio in descending order
+ private static void sortItemsByRatio(Item[] items) 
 	    {
 
 	        for (int i = 0; i < items.length - 1; i++) 
@@ -66,17 +50,12 @@ public class fknap
 
 	    }
 
-
-
 	    private static double getMaxValue(Item[] items, int capacity) 
 
 	    {
-
 	        sortItemsByRatio(items);
 
 	        double totalValue = 0.0;
-
-	        
 
 	        // Loop with explicit index control
 
@@ -93,13 +72,9 @@ public class fknap
 	                capacity -= items[i].weight;
 
 	                totalValue += items[i].profit;
-
 	            } 
-
 	            else 
-
 	            {
-
 	                // If the item can only be taken partially
 
 	                totalValue += items[i].profit * ((double) capacity / items[i].weight);
@@ -107,15 +82,10 @@ public class fknap
 	                // End the loop by setting i to items.length
 
 	                i = items.length;
-
 	            }
 
 	        }
-
-
-
 	        return totalValue;
-
 	    }
 
 
@@ -128,21 +98,15 @@ public class fknap
 
 	        Scanner scanner = new Scanner(System.in);
 
-
-
 	        // Take user input for number of items
 
 	        System.out.print("Enter the number of items: ");
 
 	        int n = scanner.nextInt();
 
-
-
 	        // Create an array to hold items
 
 	        Item[] items = new Item[n];
-
-
 
 	        // Take user input for each item's profit and weight
 
@@ -159,16 +123,11 @@ public class fknap
 	            items[i] = new Item(profit, weight);
 
 	        }
-
-
-
-	        // Take user input for knapsack capacity
+// Take user input for knapsack capacity
 
 	        System.out.print("Enter the capacity of the knapsack: ");
 
 	        int capacity = scanner.nextInt();
-
-
 
 	        // Compute and display the maximum value
 
@@ -176,10 +135,195 @@ public class fknap
 
 	        System.out.printf("Maximum value in knapsack: %.2f\n", maxValue);
 
-
-
 	        scanner.close();
 
 	    }
 
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+package Daa;
+
+import java.util.Scanner;
+
+public class Knap 
+
+{
+
+    public static int knapsack(int[] weights, int[] values, int n, int capacity) 
+
+    {
+
+        int[][] dp = new int[n + 1][capacity + 1];
+
+        boolean[] selected = new boolean[n]; // To track which items are selected
+
+
+
+        // Fill dp table
+
+        for (int i = 0; i <= n; i++) 
+
+        {
+
+            for (int w = 0; w <= capacity; w++) 
+
+            {
+
+                if (i == 0 || w == 0) 
+
+                {
+
+                    dp[i][w] = 0;
+
+                } 
+
+                else if (weights[i - 1] <= w) 
+
+                {
+
+                    dp[i][w] = Math.max(values[i - 1] + dp[i - 1][w - weights[i - 1]], dp[i - 1][w]);
+
+                } 
+
+                else 
+
+                {
+
+                    dp[i][w] = dp[i - 1][w]; // Exclude the current item
+
+                }
+
+            }
+
+        }
+
+
+
+        // Backtrack to find the items included
+
+        int w = capacity;
+
+        
+
+        for (int i = n; i > 0 && w > 0; i--) 
+
+        {
+
+            if (dp[i][w] != dp[i - 1][w]) // Item `i-1` was included
+
+            {
+
+                selected[i - 1] = true; // Mark item as selected
+
+                w -= weights[i - 1];
+
+            }
+
+        }
+
+
+
+        // Print the items selected and their weights
+
+        System.out.print("Items selected (0-indexed): ");
+
+        for (int i = 0; i < n; i++) 
+
+        {
+
+            if (selected[i]) 
+
+            {
+
+                System.out.print(i + " ");
+
+            }
+
+        }
+
+        //System.out.println("\nTotal weight of selected items: " + totalWeight);
+
+
+
+        return dp[n][capacity]; // The maximum value for the given capacity
+
+    }
+
+
+
+    public static void main(String[] args) 
+
+    {
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the number of items: ");
+
+        int n = scanner.nextInt();
+
+
+
+        System.out.print("Enter the knapsack capacity: ");
+
+        int capacity = scanner.nextInt();
+
+
+
+        int[] weights = new int[n];
+
+        int[] values = new int[n];
+
+
+
+        System.out.println("Enter the weights of the items:");
+
+        for (int i = 0; i < n; i++) 
+
+        {
+
+            weights[i] = scanner.nextInt();
+
+        }
+
+        System.out.println("Enter the values of the items:");
+
+        for (int i = 0; i < n; i++) 
+
+        {
+
+            values[i] = scanner.nextInt();
+
+        }
+
+
+
+        int maxValue = knapsack(weights, values, n, capacity);
+
+        System.out.println("The maximum value that can be obtained is: " + maxValue);
+
+
+
+        scanner.close();
+
+    }
+
+}
+
