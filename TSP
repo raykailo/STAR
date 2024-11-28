@@ -1,0 +1,156 @@
+package Daa;
+
+ 
+
+import java.util.Scanner;
+
+ 
+
+public class TSP
+
+{
+
+               static int n;
+
+    static int[][] graph;
+
+    static boolean[] visited;
+
+    static int minCost = Integer.MAX_VALUE;
+
+    static int[] bestPath; // To store the best path
+
+ 
+
+    public static void tsp(int currentCity, int count, int cost, int startCity, int[] path)
+
+    {
+
+        path[count - 1] = currentCity; // Add the current city to the path
+
+ 
+
+        // Base case: all cities visited, return to start
+
+        if (count == n && graph[currentCity][startCity] > 0)
+
+        {
+
+            cost += graph[currentCity][startCity];
+
+            if (cost < minCost)
+
+            {
+
+                minCost = cost;
+
+                System.arraycopy(path, 0, bestPath, 0, n); // Copy the path
+
+                bestPath[n] = startCity; // Complete the cycle
+
+            }
+
+            return;
+
+        }
+
+ 
+
+        // Explore unvisited cities
+
+        for (int i = 0; i < n; i++)
+
+        {
+
+            if (!visited[i] && graph[currentCity][i] > 0)
+
+            {
+
+                visited[i] = true;
+
+                tsp(i, count + 1, cost + graph[currentCity][i], startCity, path);
+
+                visited[i] = false; // Backtrack
+
+            }
+
+        }
+
+    }
+
+ 
+
+    public static void main(String[] args)
+
+    {
+
+        Scanner sc = new Scanner(System.in);
+
+ 
+
+        System.out.print("Enter number of cities: ");
+
+        n = sc.nextInt();
+
+        graph = new int[n][n];
+
+        System.out.println("Enter adjacency matrix:");
+
+        for (int i = 0; i < n; i++)
+
+        {
+
+            for (int j = 0; j < n; j++)
+
+            {
+
+                graph[i][j] = sc.nextInt();
+
+            }
+
+        }
+
+ 
+
+        System.out.print("Enter source city (0 to " + (n - 1) + "): ");
+
+        int source = sc.nextInt();
+
+ 
+
+        visited = new boolean[n];
+
+ 
+
+        visited[source] = true;
+
+ 
+
+        bestPath = new int[n + 1]; // Allocate space for n cities + 1 return to start
+
+        int[] path = new int[n + 1]; // Temporary array for the current path
+
+        tsp(source, 1, 0, source, path);
+
+ 
+
+        System.out.println("The minimum cost: " + minCost);
+
+        System.out.print("The path: ");
+
+        for (int i = 0; i <= n; i++) {
+
+            System.out.print(bestPath[i] + " ");
+
+        }
+
+ 
+
+        sc.close();
+
+    }
+
+}
+
+O(n!)
+
