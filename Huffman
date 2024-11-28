@@ -1,0 +1,154 @@
+package UIT833;
+
+import java.util.*;
+
+
+
+class HuffmanNode {
+
+    int frequency;
+
+    char character;
+
+
+
+    HuffmanNode left;
+
+    HuffmanNode right;
+
+}
+
+
+
+// Comparator class to compare two Huffman nodes
+
+class NodeComparator implements java.util.Comparator<HuffmanNode> {
+
+    public int compare(HuffmanNode node1, HuffmanNode node2) {
+
+        return node1.frequency - node2.frequency;
+
+    }
+
+}
+
+
+
+public class HuffmanCoding {
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+
+
+
+        System.out.print("Enter the input string: ");
+
+        String input = scanner.nextLine();
+
+
+
+        // Count the frequency of each character in the input string
+
+        int[] frequency = new int[256]; // ASCII characters
+
+        for (char c : input.toCharArray()) {
+
+            frequency[c]++;
+
+        }
+
+
+
+        // Build the Huffman Tree
+
+        PriorityQueue<HuffmanNode> priorityQueue = new PriorityQueue<>(new NodeComparator());
+
+        for (int i = 0; i < 256; i++) {
+
+            if (frequency[i] > 0) {
+
+                HuffmanNode node = new HuffmanNode();
+
+                node.character = (char) i;
+
+                node.frequency = frequency[i];
+
+                priorityQueue.add(node);
+
+            }
+
+        }
+
+
+
+        while (priorityQueue.size() > 1) {
+
+            HuffmanNode left = priorityQueue.poll();
+
+            HuffmanNode right = priorityQueue.poll();
+
+
+
+            HuffmanNode newNode = new HuffmanNode();
+
+            newNode.frequency = left.frequency + right.frequency;
+
+            newNode.left = left;
+
+            newNode.right = right;
+
+
+
+            priorityQueue.add(newNode);
+
+        }
+
+
+
+        // The root of the Huffman tree
+
+        HuffmanNode root = priorityQueue.poll();
+
+
+
+        System.out.println("Huffman Codes:");
+
+        printHuffmanCodes(root, "");
+
+    }
+
+
+
+    // Recursive function to print Huffman codes
+
+    private static void printHuffmanCodes(HuffmanNode node, String code) {
+
+        if (node == null) {
+
+            return;
+
+        }
+
+
+
+        // Leaf node contains a character
+
+        if (node.left == null && node.right == null) {
+
+            System.out.println(node.character + ": " + code);
+
+            return;
+
+        }
+
+
+
+        printHuffmanCodes(node.left, code + "0");
+
+        printHuffmanCodes(node.right, code + "1");
+
+    }
+
+}
+
