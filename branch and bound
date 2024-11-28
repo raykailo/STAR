@@ -1,0 +1,84 @@
+Package UIT833;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class Node {
+    int level;
+    int sum;
+    List<Integer> subset;
+
+    Node(int level, int sum, List<Integer> subset) {
+        this.level = level;
+        this.sum = sum;
+        this.subset = new ArrayList<>(subset);
+    }
+}
+
+public class SumOfSubsetsBranchBound {
+
+    static void sumOfSubsets(int[] weights, int targetSum) {
+        List<Node> queue = new ArrayList<>();
+        Node root = new Node(-1, 0, new ArrayList<>());
+        queue.add(root);
+
+        boolean found = false;
+
+        while (!queue.isEmpty()) {
+            Node currentNode = queue.remove(0);
+
+            // If the current sum matches the target, print the subset
+            if (currentNode.sum == targetSum) {
+                System.out.println("Subset found: " + currentNode.subset);
+                found = true;
+                continue; // Explore other possibilities
+            }
+
+            // Add child nodes (next level) if within bounds
+            int nextLevel = currentNode.level + 1;
+            if (nextLevel < weights.length) {
+                // Include the next weight
+                List<Integer> subsetWithNext = new ArrayList<>(currentNode.subset);
+                subsetWithNext.add(weights[nextLevel]);
+                int newSum = currentNode.sum + weights[nextLevel];
+
+                // Add child node if sum <= target
+                if (newSum <= targetSum) {
+                    queue.add(new Node(nextLevel, newSum, subsetWithNext));
+                }
+
+                // Exclude the next weight
+                queue.add(new Node(nextLevel, currentNode.sum, currentNode.subset));
+            }
+        }
+
+        if (!found) {
+            System.out.println("No subset with the given sum found.");
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the number of weights: ");
+        int n = scanner.nextInt();
+
+        int[] weights = new int[n];
+        System.out.println("Enter the weights:");
+        for (int i = 0; i < n; i++) {
+            weights[i] = scanner.nextInt();
+        }
+
+        // Input target sum
+        System.out.print("Enter the target sum: ");
+        int targetSum = scanner.nextInt();
+
+        // Display inputs
+        System.out.println("\nWeights: " + java.util.Arrays.toString(weights));
+        System.out.println("Target Sum: " + targetSum);
+
+        sumOfSubsets(weights, targetSum);
+
+        scanner.close();
+    }
+}
