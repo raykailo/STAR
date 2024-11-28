@@ -1,0 +1,198 @@
+package UIT833;
+
+import java.util.*;
+
+public class LinearSearch {
+
+	public static void linearSearch(int arr[],int n,int key) {
+
+		boolean found = false;
+
+		
+
+		for(int i=0;i<n && !found;i++) {
+
+			System.out.println("Pass "+ (i+1)+":checking element at location " + i +"(value = " + arr[i] +")");
+
+			if(arr[i]==key) {
+
+				System.out.println("Element found at location:" + i);
+
+				found = true;
+
+			}
+
+		}
+
+		if(!found) {
+
+			System.out.println("Element not found.");
+
+		}
+
+	}
+
+	public static void main(String[] args) {
+
+		Scanner sc = new Scanner(System.in);
+
+		
+
+		System.out.println("Enter size of array:");
+
+		int n = sc.nextInt();
+
+		
+
+		int arr[]=new int[n];
+
+		System.out.println("Enter the elements of array:");
+
+		for(int i=0;i<n;i++) {
+
+			arr[i]=sc.nextInt();
+
+		}
+
+		
+
+		System.out.println("Enter element to be search:");
+
+		int key = sc.nextInt();
+
+		
+
+		linearSearch(arr,n,key);
+
+		
+
+		sc.close();
+
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+package UIT833;
+
+import java.util.*;
+
+public class BinarySearch {
+
+	public static void binarySearch(int arr[],int n,int target) {
+
+		int left = 0;
+
+		int right = n - 1;
+
+		int result = -1;
+
+		int searchCnt = 0;
+
+		
+
+		while(left <= right) {
+
+			searchCnt++;
+
+			int mid = left + (right-left)/2;
+
+			
+
+			if(arr[mid]==target) {
+
+				result=mid;
+
+				break;
+
+			}
+
+			
+
+			if(arr[mid]<target) {
+
+				left = mid+1;
+
+			}
+
+			else {
+
+				right = mid-1;
+
+			}
+
+		}
+
+		
+
+		if(result != -1) {
+
+			System.out.println("Element found at index:" + result);
+
+		}
+
+		else {
+
+			System.out.println("Element not found");
+
+		}
+
+		
+
+		System.out.println("Number of comparisons:" + searchCnt);
+
+	}
+
+	public static void main(String[] args) {
+
+		Scanner sc = new Scanner(System.in);
+
+		
+
+		System.out.println("Enter size of array:");
+
+		int n = sc.nextInt();
+
+		
+
+		int arr[]=new int[n];
+
+		System.out.println("Enter elements of array:");
+
+		for(int i=0;i<n;i++) {
+
+			arr[i]=sc.nextInt();
+
+		}
+
+		
+
+		System.out.println("Enter element to be search:");
+
+		int target = sc.nextInt();
+
+		
+
+		binarySearch(arr,n,target);
+
+		
+
+		sc.close();
+
+	}
+
+
+
+}
+
